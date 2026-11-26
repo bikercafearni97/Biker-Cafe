@@ -1,0 +1,139 @@
+.closing__panel {
+  position: relative;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-metal);
+  background: linear-gradient(135deg, #13161f 0%, #090a0e 65%, #170d11 100%);
+  padding: clamp(2.4rem, 5vw, 4.5rem);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+}
+
+.closing__glow {
+  position: absolute;
+  right: -14%;
+  top: -30%;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(225, 29, 42, 0.22) 0%,
+    rgba(225, 29, 42, 0.06) 38%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.closing__stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--red-bright), transparent 85%);
+}
+
+.closing__content {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+}
+
+.closing__title {
+  margin: 1rem 0 1.1rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.8vw, 3.1rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--silver-bright);
+}
+
+.closing__copy {
+  margin: 0 0 1.5rem;
+  max-width: 58ch;
+  color: var(--silver-muted);
+  font-size: 1rem;
+}
+
+.closing__details {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1.85rem;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: rgba(9, 10, 14, 0.6);
+}
+
+.closing__detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  color: var(--silver-primary);
+  font-size: 0.94rem;
+}
+
+.closing__detail-item svg {
+  flex-shrink: 0;
+  margin-top: 0.22rem;
+  color: var(--red-bright);
+}
+
+.closing__detail-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem 1.5rem;
+}
+
+.closing__contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--silver-muted);
+  transition: color 0.22s ease;
+  word-break: break-word;
+}
+
+.closing__contact-link svg {
+  color: var(--red-bright);
+  flex-shrink: 0;
+}
+
+.closing__contact-link:hover {
+  color: var(--silver-bright);
+}
+
+.closing__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+}
+
+.closing__owner {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--silver-muted);
+}
+
+@media (max-width: 520px) {
+  .closing__panel {
+    padding: 1.65rem 1.25rem;
+  }
+
+  .closing__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .closing__actions .mag-btn {
+    width: 100%;
+  }
+
+  .closing__contact-link {
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,56 @@
+:root {
+  /* Surface Palette — Obsidian & Charcoal */
+  --bg-void: #07080b;
+  --bg-primary: #0b0c10;
+  --bg-elevated: #12141b;
+  --bg-card: #151821;
+  --bg-glass: rgba(12, 14, 19, 0.78);
+
+  /* Racing Red Highlights */
+  --red-core: #e11d2a;
+  --red-bright: #ff2e3b;
+  --red-deep: #8f0f19;
+  --red-glow: rgba(225, 29, 42, 0.28);
+  --red-subtle: rgba(225, 29, 42, 0.12);
+
+  /* Metallic Silver Graphics */
+  --silver-bright: #f1f4f9;
+  --silver-primary: #cfd5df;
+  --silver-muted: #8c94a3;
+  --silver-dim: #545b69;
+  --metal-gradient: linear-gradient(
+    135deg,
+    #f6f8fc 0%,
+    #b6becb 38%,
+    #6e7685 68%,
+    #dfe4ed 100%
+  );
+
+  /* Borders */
+  --border-subtle: rgba(207, 213, 223, 0.1);
+  --border-metal: rgba(207, 213, 223, 0.22);
+  --border-specular: rgba(255, 255, 255, 0.08);
+  --border-red: rgba(225, 29, 42, 0.45);
+  --surface-panel: linear-gradient(165deg, rgba(22, 25, 34, 0.94) 0%, rgba(10, 12, 16, 0.98) 100%);
+
+  /* Typography */
+  --font-display: 'Syne', 'Rajdhani', system-ui, sans-serif;
+  --font-tech: 'Rajdhani', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Spacing & Layout */
+  --container-max: 1320px;
+  --nav-height: 76px;
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+
+  /* Shadows */
+  --shadow-card: 0 24px 60px -24px rgba(0, 0, 0, 0.85);
+  --shadow-red: 0 0 40px -10px rgba(225, 29, 42, 0.45);
+
+  /* Motion */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}

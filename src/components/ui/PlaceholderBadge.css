@@ -1,0 +1,21 @@
+.ph-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.24rem 0.62rem;
+  border-radius: 999px;
+  border: 1px dashed var(--border-metal);
+  background: rgba(207, 213, 223, 0.04);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-muted);
+}
+
+.ph-badge__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red-core);
+}

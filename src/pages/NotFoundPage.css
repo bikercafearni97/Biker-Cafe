@@ -1,0 +1,33 @@
+.not-found-page {
+  min-height: 75vh;
+  display: grid;
+  align-items: center;
+  padding-top: 6rem;
+}
+
+.not-found-card {
+  max-width: 640px;
+  display: grid;
+  justify-items: start;
+  gap: 1rem;
+}
+
+.not-found-card__title {
+  margin: 0;
+  font-size: clamp(2.1rem, 4.5vw, 3.4rem);
+  line-height: 1.04;
+}
+
+.not-found-card__copy {
+  margin: 0;
+  color: var(--silver-muted);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.not-found-card__actions {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}

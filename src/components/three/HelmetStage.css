@@ -1,0 +1,210 @@
+.helmet-stage {
+  position: relative;
+  width: 100%;
+  min-height: clamp(420px, 60vh, 630px);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-metal);
+  background: radial-gradient(circle at 50% 45%, rgba(28, 31, 42, 0.72), rgba(9, 10, 14, 0.94));
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-card);
+}
+
+.helmet-stage--intro {
+  min-height: 100%;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.helmet-stage--intro canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.helmet-stage__glow {
+  position: absolute;
+  inset: 12% 16%;
+  background: radial-gradient(circle at 52% 48%, rgba(225, 29, 42, 0.24), transparent 64%);
+  filter: blur(36px);
+  pointer-events: none;
+}
+
+.helmet-stage__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(207, 213, 223, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(207, 213, 223, 0.045) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 92%);
+  pointer-events: none;
+}
+
+.helmet-stage__hud-top {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--silver-muted);
+}
+
+.helmet-stage__hud-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--silver-primary);
+}
+
+.helmet-stage__hud-tag svg {
+  color: var(--red-bright);
+}
+
+.helmet-stage__hud-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0.85;
+}
+
+.helmet-stage__canvas-wrap {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-height: 330px;
+  cursor: grab;
+}
+
+.helmet-stage__canvas-wrap:active {
+  cursor: grabbing;
+}
+
+.helmet-stage__controls {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  background: rgba(8, 9, 12, 0.82);
+  border-top: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+}
+
+.helmet-stage__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.helmet-stage__swatch,
+.helmet-stage__visor-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.48rem;
+  padding: 0.38rem 0.78rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--silver-muted);
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  transition:
+    border-color 0.25s ease,
+    color 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.helmet-stage__swatch:hover,
+.helmet-stage__visor-btn:hover {
+  border-color: var(--border-metal);
+  color: var(--silver-bright);
+}
+
+.helmet-stage__swatch.is-active,
+.helmet-stage__visor-btn.is-open {
+  border-color: var(--red-bright);
+  background: var(--red-subtle);
+  color: var(--silver-bright);
+}
+
+.helmet-stage__visor-btn {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.helmet-stage__swatch-chip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  .helmet-stage__swatch,
+  .helmet-stage__visor-btn {
+    min-height: 44px;
+    padding: 0.52rem 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .helmet-stage__glow {
+    inset: 4% 8%;
+    background: radial-gradient(
+      circle at 52% 48%,
+      rgba(225, 29, 42, 0.2) 0%,
+      rgba(225, 29, 42, 0.06) 42%,
+      transparent 70%
+    );
+    filter: none;
+  }
+
+  .helmet-stage__controls {
+    backdrop-filter: none;
+    background: rgba(8, 9, 12, 0.95);
+  }
+}
+
+@media (max-width: 640px) {
+  .helmet-stage {
+    min-height: 380px;
+  }
+
+  .helmet-stage__hud-top {
+    flex-wrap: wrap;
+    padding: 0.85rem 1rem 0;
+  }
+
+  .helmet-stage__canvas-wrap {
+    min-height: 280px;
+  }
+
+  .helmet-stage__controls {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.85rem 1rem;
+  }
+
+  .helmet-stage__visor-btn {
+    justify-content: center;
+    width: 100%;
+  }
+}

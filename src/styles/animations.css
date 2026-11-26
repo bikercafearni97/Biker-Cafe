@@ -1,0 +1,64 @@
+@keyframes metallicSweep {
+  0% {
+    transform: translateX(-140%) skewX(-22deg);
+  }
+  100% {
+    transform: translateX(240%) skewX(-22deg);
+  }
+}
+
+@keyframes pulseBeacon {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(225, 29, 42, 0.55);
+  }
+  50% {
+    opacity: 0.72;
+    box-shadow: 0 0 0 8px rgba(225, 29, 42, 0);
+  }
+}
+
+@keyframes scanlineDrift {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.beacon-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--red-bright);
+  animation: pulseBeacon 2.2s ease-in-out infinite;
+}
+
+.metallic-text {
+  background: var(--metal-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

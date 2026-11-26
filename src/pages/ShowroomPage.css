@@ -1,0 +1,239 @@
+.showroom-hero {
+  position: relative;
+  padding-block: clamp(2.5rem, 5vw, 4rem) clamp(2rem, 4vw, 3.25rem);
+  border-bottom: 1px solid var(--border-subtle);
+  background:
+    radial-gradient(circle at 82% 18%, rgba(225, 29, 42, 0.14), transparent 44%),
+    linear-gradient(180deg, rgba(16, 18, 25, 0.85) 0%, transparent 100%);
+}
+
+.showroom-hero__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: end;
+  gap: clamp(1.5rem, 4vw, 3rem);
+}
+
+.showroom-hero__top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.showroom-hero__title {
+  margin: 1.15rem 0 1rem;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.3vw, 3.6rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--silver-bright);
+  text-transform: uppercase;
+}
+
+.showroom-hero__copy {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--silver-muted);
+  font-size: 1rem;
+}
+
+.showroom-notice {
+  margin-top: 1.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.68rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--border-red);
+  background: rgba(225, 29, 42, 0.08);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--silver-primary);
+}
+
+.showroom-notice svg {
+  flex-shrink: 0;
+  color: var(--red-bright);
+}
+
+.showroom-telemetry {
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-metal);
+  border-top: 2px solid var(--red-core);
+  background-color: #0b0d12;
+  padding: 1.35rem;
+  box-shadow: var(--shadow-card);
+}
+
+.showroom-telemetry__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  color: var(--silver-bright);
+  margin-bottom: 1rem;
+}
+
+.showroom-telemetry__head svg {
+  color: var(--red-bright);
+}
+
+.showroom-telemetry__stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding-block: 0.9rem;
+  border-block: 1px solid var(--border-subtle);
+}
+
+.showroom-telemetry__stats dt {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-dim);
+}
+
+.showroom-telemetry__stats dd {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--silver-bright);
+}
+
+.showroom-telemetry__note {
+  margin: 0.9rem 0 0;
+  font-size: 0.8rem;
+  color: var(--silver-muted);
+}
+
+.axor-brand-band {
+  padding-top: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.axor-brand-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.45rem 1.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-metal);
+  border-left: 3px solid var(--red-core);
+  background-color: #0d0f15;
+}
+
+.axor-brand-card__kicker {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red-bright);
+}
+
+.axor-brand-card__title {
+  margin: 0.35rem 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  color: var(--silver-bright);
+  letter-spacing: 0.04em;
+}
+
+.axor-brand-card__text {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--silver-muted);
+  font-size: 0.92rem;
+}
+
+.axor-brand-card__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.65rem;
+}
+
+.axor-brand-card__chip {
+  padding: 0.3rem 0.72rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(207, 213, 223, 0.05);
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-primary);
+}
+
+.axor-brand-card__sub {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-muted);
+}
+
+.showroom-gallery {
+  padding-top: clamp(2rem, 4vw, 3rem);
+}
+
+.showroom-grid {
+  margin-top: 1.75rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.35rem;
+}
+
+.showroom-empty {
+  margin-top: 2rem;
+  padding: 3rem 1.5rem;
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--border-metal);
+  text-align: center;
+  color: var(--silver-muted);
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+}
+
+@media (max-width: 1024px) {
+  .showroom-hero__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .axor-brand-card__meta {
+    align-items: flex-start;
+  }
+
+  .showroom-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .showroom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .axor-brand-card {
+    padding: 1.15rem 1.25rem;
+  }
+
+  .showroom-notice {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .showroom-telemetry__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

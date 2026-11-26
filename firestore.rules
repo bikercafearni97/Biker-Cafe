@@ -1,0 +1,52 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == 'aBlTShPkDvbT1GQ4Du0Vk3DBtEW2';
+    }
+
+    function isNonEmptyBoundedString(val, minLen, maxTrimmedLen, maxRawLen) {
+      return val is string
+        && val.size() <= maxRawLen
+        && val.trim().size() >= minLen
+        && val.trim().size() <= maxTrimmedLen;
+    }
+
+    function isValidNewEnquiry() {
+      let data = request.resource.data;
+      let allowedKeys = [
+        'name',
+        'contact',
+        'topic',
+        'message',
+        'status',
+        'createdAt',
+        'source'
+      ];
+
+      return data.keys().hasOnly(allowedKeys)
+        && data.keys().hasAll(allowedKeys)
+        && isNonEmptyBoundedString(data.name, 2, 100, 120)
+        && isNonEmptyBoundedString(data.contact, 5, 120, 140)
+        && isNonEmptyBoundedString(data.topic, 2, 80, 100)
+        && isNonEmptyBoundedString(data.message, 5, 2000, 2200)
+        && data.status is string
+        && data.status == 'new'
+        && data.source is string
+        && data.source == 'website'
+        && data.createdAt is timestamp
+        && data.createdAt == request.time;
+    }
+
+    match /enquiries/{enquiryId} {
+      allow create: if isValidNewEnquiry();
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

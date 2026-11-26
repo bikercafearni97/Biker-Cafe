@@ -1,0 +1,268 @@
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+/* Racing-style diagonal split wipe panels (pure pitch black initially) */
+.intro__wipe {
+  position: absolute;
+  inset: -12%;
+  background: #000000;
+  z-index: 0;
+  will-change: transform;
+}
+
+.intro__wipe--top {
+  clip-path: polygon(0 0, 100% 0, 100% 48%, 0 58%);
+  border-bottom: 2px solid var(--red-core);
+}
+
+.intro__wipe--bottom {
+  clip-path: polygon(0 58%, 100% 48%, 100% 100%, 0 100%);
+  border-top: 2px solid var(--red-bright);
+}
+
+/* Pre-feathered atmospheric gradient (no heavy real-time CSS blur filter) */
+.intro__smoke {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(225, 29, 42, 0.18) 0%, rgba(225, 29, 42, 0.05) 36%, transparent 66%),
+    radial-gradient(circle at 26% 36%, rgba(180, 195, 220, 0.06) 0%, transparent 45%);
+  pointer-events: none;
+}
+
+/* Tiny central crimson glowing ignition point */
+.intro__core-point {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  margin-left: -7px;
+  border-radius: 50%;
+  z-index: 2;
+  opacity: 0;
+  background: radial-gradient(circle, #ffffff 0%, #ff2e3b 42%, transparent 78%);
+  box-shadow: 0 0 26px 8px rgba(255, 42, 56, 0.72);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Small sports helmet silhouette expansion */
+.intro__silhouette-wrap {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.intro__silhouette {
+  width: min(260px, 60vw);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.intro__silhouette svg {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 0 18px rgba(255, 42, 56, 0.55));
+}
+
+/* 3D Helmet Canvas Layer */
+.intro__canvas-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.intro__fallback {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+/* Dramatic red optical light sweep */
+.intro__light-sweep {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  width: 28%;
+  z-index: 4;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 36, 51, 0.14) 38%,
+    rgba(255, 255, 255, 0.24) 50%,
+    rgba(255, 36, 51, 0.14) 62%,
+    transparent 100%
+  );
+  transform: skewX(-18deg);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Technical HUD Corners (lightweight solid translucent dark background, no backdrop-filter stall) */
+.intro__hud {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.intro__hud-corner {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.5rem 0.85rem;
+  border-left: 2px solid var(--red-bright);
+  background: rgba(8, 9, 13, 0.78);
+}
+
+.intro__hud-corner--tl {
+  top: clamp(1.25rem, 4vw, 2.5rem);
+  left: clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.intro__hud-corner--tr {
+  top: clamp(1.25rem, 4vw, 2.5rem);
+  right: clamp(1.25rem, 4vw, 2.5rem);
+  border-left: none;
+  border-right: 2px solid var(--red-bright);
+  text-align: right;
+}
+
+.intro__hud-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  color: var(--silver-bright);
+}
+
+.intro__hud-sub {
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  color: var(--red-bright);
+}
+
+/* Metallic BIKER CAFE Logo Lockup */
+.intro__logo-lockup {
+  position: relative;
+  z-index: 6;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-inline: 1.5rem;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.intro__logo-box {
+  position: relative;
+  overflow: hidden;
+  padding: 0.5rem 0.9rem;
+}
+
+.intro__logo-sheen {
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-22deg);
+  pointer-events: none;
+}
+
+.intro__tagline {
+  margin: 0.95rem 0 0;
+  font-family: var(--font-mono);
+  font-size: clamp(0.66rem, 1.3vw, 0.78rem);
+  letter-spacing: 0.28em;
+  color: var(--silver-muted);
+  text-transform: uppercase;
+}
+
+.intro__progress {
+  margin-top: 1.4rem;
+  width: 210px;
+  height: 2px;
+  background: rgba(207, 213, 223, 0.16);
+  overflow: hidden;
+  border-radius: 999px;
+}
+
+.intro__progress-fill {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--red-core), var(--silver-bright));
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.intro__skip {
+  position: fixed;
+  bottom: calc(clamp(1.25rem, 4vw, 2.25rem) + env(safe-area-inset-bottom, 0px));
+  right: clamp(1.25rem, 4vw, 2.25rem);
+  z-index: 10;
+  min-height: 44px;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border-metal);
+  background: rgba(10, 12, 16, 0.9);
+  color: var(--silver-primary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.intro__skip:hover {
+  border-color: var(--red-bright);
+  color: #ffffff;
+}
+
+/* Visible keyboard focus indicator for the Skip Intro button */
+.intro__skip:focus-visible {
+  outline: 2px solid var(--red-bright);
+  outline-offset: 3px;
+  border-color: var(--red-bright);
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .intro__hud-label {
+    font-size: 0.56rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .intro__core-point,
+  .intro__silhouette,
+  .intro__light-sweep {
+    will-change: auto;
+  }
+
+  .intro__silhouette svg {
+    filter: none;
+  }
+}

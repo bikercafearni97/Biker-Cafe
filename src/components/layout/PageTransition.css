@@ -1,0 +1,15 @@
+.page-transition {
+  position: relative;
+}
+
+.page-transition__accent {
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--red-bright), var(--silver-bright), transparent);
+  transform-origin: left center;
+  z-index: 55;
+  pointer-events: none;
+}
