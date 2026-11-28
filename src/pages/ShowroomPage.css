@@ -114,6 +114,85 @@
   color: var(--silver-muted);
 }
 
+.showroom-promo-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 960px) {
+  .showroom-promo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.finder-banner-card {
+  padding: 1.5rem 1.65rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-metal);
+  border-top: 2px solid var(--color-racing-red, #e11d2a);
+  background: #0d1017;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.finder-banner-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #fca5a5;
+  margin-bottom: 0.5rem;
+}
+
+.finder-banner-card__badge svg {
+  color: var(--color-racing-red, #e11d2a);
+}
+
+.finder-banner-card__title {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.finder-banner-card__text {
+  margin: 0 0 1.2rem;
+  font-size: 0.88rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.finder-banner-card__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.2rem;
+  background: var(--color-racing-red, #e11d2a);
+  color: #fff;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  align-self: flex-start;
+  box-shadow: 0 4px 16px rgba(225, 29, 42, 0.4);
+  transition: all 0.2s ease;
+}
+
+.finder-banner-card__btn:hover {
+  background: #ff2e3b;
+  transform: translateY(-1px);
+}
+
 .axor-brand-band {
   padding-top: clamp(1.75rem, 3.5vw, 2.5rem);
 }
@@ -185,8 +264,93 @@
   padding-top: clamp(2rem, 4vw, 3rem);
 }
 
+/* 2-Column Responsive Layout */
+.showroom-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.showroom-main {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Active Tags Bar */
+.showroom-active-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  padding: 0.65rem 0.9rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-sm, 6px);
+}
+
+.showroom-active-tags__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.25rem;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(225, 29, 42, 0.12);
+  border: 1px solid rgba(225, 29, 42, 0.3);
+  color: #fca5a5;
+  font-size: 0.78rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.filter-pill button {
+  background: transparent;
+  border: none;
+  color: #fca5a5;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  border-radius: 50%;
+  transition: all 0.18s ease;
+}
+
+.filter-pill button:hover {
+  background: rgba(225, 29, 42, 0.4);
+  color: #fff;
+}
+
+.filter-pill-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: auto;
+  transition: all 0.2s ease;
+}
+
+.filter-pill-clear:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
 .showroom-grid {
-  margin-top: 1.75rem;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.35rem;
@@ -194,14 +358,86 @@
 
 .showroom-empty {
   margin-top: 2rem;
-  padding: 3rem 1.5rem;
+  padding: 3.5rem 1.5rem;
   border-radius: var(--radius-md);
   border: 1px dashed var(--border-metal);
+  background: rgba(255, 255, 255, 0.015);
   text-align: center;
   color: var(--silver-muted);
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 0.75rem;
+}
+
+.showroom-empty__icon {
+  color: var(--color-racing-red, #e11d2a);
+}
+
+.showroom-empty__title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.showroom-empty__desc {
+  margin: 0;
+  max-width: 44ch;
+  font-size: 0.9rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
+.showroom-empty__reset-btn {
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(225, 29, 42, 0.15);
+  border: 1px solid var(--color-racing-red, #e11d2a);
+  color: #fff;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.showroom-empty__reset-btn:hover {
+  background: var(--color-racing-red, #e11d2a);
+  box-shadow: 0 0 16px rgba(225, 29, 42, 0.4);
+}
+
+.showroom-loading {
+  margin-top: 2rem;
+  padding: 3rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  color: var(--silver-muted);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.showroom-loading__spin {
+  animation: spin 1s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showroom-loading__spin {
+    animation: none;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -215,12 +451,14 @@
 
   .showroom-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
   }
 }
 
 @media (max-width: 640px) {
   .showroom-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
   }
 
   .axor-brand-card {
@@ -229,6 +467,13 @@
 
   .showroom-notice {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .showroom-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 }
 

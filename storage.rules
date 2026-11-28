@@ -1,0 +1,45 @@
+rules_version = '2';
+
+// Firebase Storage Security Rules for BIKER CAFE
+// Admin UID: aBlTShPkDvbT1GQ4Du0Vk3DBtEW2
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == 'aBlTShPkDvbT1GQ4Du0Vk3DBtEW2';
+    }
+
+    // Product Images:
+    // Only authorized admin can upload, overwrite, or delete.
+    // Public visitors can read images for showroom display.
+    // Allowed image content types: JPEG, PNG, WebP; Max size: 5MB
+    match /products/images/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && (request.resource == null // delete
+            || (request.resource.size <= 5 * 1024 * 1024
+                && request.resource.contentType.matches('image/(jpeg|png|webp)')));
+    }
+
+    // 3D Helmet Models:
+    // Only authorized admin can upload, overwrite, or delete.
+    // Public visitors can read models for 3D inspection.
+    // Allowed formats: .glb / .gltf / binary/octet-stream; Max size: 30MB
+    match /products/models/{fileName} {
+      allow read: if true;
+      allow write: if isAdmin()
+        && (request.resource == null // delete
+            || (request.resource.size <= 30 * 1024 * 1024
+                && (request.resource.contentType.matches('model/gltf-binary')
+                    || request.resource.contentType.matches('model/gltf\\+json')
+                    || request.resource.contentType.matches('application/octet-stream')
+                    || fileName.matches('.*\\.(glb|gltf)$'))));
+    }
+
+    // Blanket deny for all other storage paths
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

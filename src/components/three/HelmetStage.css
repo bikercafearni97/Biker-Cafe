@@ -1,7 +1,8 @@
 .helmet-stage {
   position: relative;
   width: 100%;
-  min-height: clamp(420px, 60vh, 630px);
+  max-width: 100%;
+  min-height: clamp(340px, 50vh, 630px);
   border-radius: var(--radius-lg);
   border: 1px solid var(--border-metal);
   background: radial-gradient(circle at 50% 45%, rgba(28, 31, 42, 0.72), rgba(9, 10, 14, 0.94));
@@ -155,6 +156,12 @@
   height: 12px;
   border-radius: 50%;
   border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.helmet-stage__visor-tints {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 768px), (pointer: coarse) {

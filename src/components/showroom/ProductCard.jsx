@@ -1,18 +1,32 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Heart, Scale, ShoppingBag } from 'lucide-react';
 import { buildWhatsAppUrl, SHOWROOM_FINISHES } from '../../data/showroomPlaceholders';
+import { useCustomerData } from '../../context/CustomerDataContext';
+import { useSmartEnquiry } from '../../context/SmartEnquiryContext';
+import { useCart } from '../../context/CartContext';
+import { getCustomerStockBadge } from '../../services/inventoryService';
 import WhatsAppIcon from '../ui/WhatsAppIcon';
 import './ProductCard.css';
 
 export default function ProductCard({ item, index = 0 }) {
+  const { isWishlisted, toggleWishlist, isInCompare, addToCompare, removeFromCompare } =
+    useCustomerData();
+  const { addHelmetToEnquiry, isHelmetInEnquiry } = useSmartEnquiry();
+  const { addToCart } = useCart();
+  const stockBadge = getCustomerStockBadge(item);
+
   const finishPreset =
     SHOWROOM_FINISHES.find((f) => f.id === item.previewFinish) || SHOWROOM_FINISHES[0];
-  const webpSrc = item.image.replace(/\.(jpe?g|png)$/i, '.webp');
+  const webpSrc = (item.image || '').replace(/\.(jpe?g|png)$/i, '.webp');
   const imgSize = item.id === 'axor-retro-jet' ? 1080 : 1200;
   const whatsappHref = buildWhatsAppUrl(
     `Hello BIKER CAFE, I would like to enquire about ${item.title}.`
   );
+
+  const wishlisted = isWishlisted(item.id);
+  const compared = isInCompare(item.id);
+  const inEnquiry = isHelmetInEnquiry(item.id);
 
   return (
     <motion.article
@@ -25,24 +39,18 @@ export default function ProductCard({ item, index = 0 }) {
       whileHover={{ y: -6 }}
     >
       <div className="slot-card__top-bar" aria-hidden="true" />
+
+      {/* 1. PRODUCT IMAGE & MEDIA CONTAINER */}
       <Link
         to={`/showroom/${item.id}`}
-        className="slot-card__link"
-        aria-label={`View ${item.title} details`}
+        className="slot-card__visual-link"
+        aria-label={`View ${item.title} 3D & photo details`}
       >
-        <div className="slot-card__sheen" aria-hidden="true" />
-
-        <div className="slot-card__top">
-          <span className="slot-card__code">{item.slotCode}</span>
-          <span className="slot-card__cat">{item.category}</span>
-        </div>
-
-        {/* Genuine Official AXOR Product Photo */}
         <div className="slot-card__visual carbon-grid-bg">
           <div
             className="slot-card__aura"
             style={{
-              background: `radial-gradient(circle, ${item.accentColor}28 0%, transparent 70%)`,
+              background: `radial-gradient(circle, ${item.accentColor || '#e11d2a'}28 0%, transparent 70%)`,
             }}
             aria-hidden="true"
           />
@@ -58,6 +66,11 @@ export default function ProductCard({ item, index = 0 }) {
               decoding="async"
             />
           </picture>
+
+          {/* Slot Code pill inside image */}
+          <span className="slot-card__slot-tag">{item.slotCode || 'AXOR'}</span>
+
+          {/* Quick finish badge on image */}
           <span className="slot-card__finish-pill">
             <span
               className="slot-card__finish-dot"
@@ -66,49 +79,118 @@ export default function ProductCard({ item, index = 0 }) {
               }}
               aria-hidden="true"
             />
-            {item.brand || 'AXOR'}
+            {finishPreset.label || 'Obsidian'}
           </span>
-        </div>
-
-        <div className="slot-card__body">
-          <h3 className="slot-card__title">{item.title}</h3>
-          <p className="slot-card__subtitle">{item.subtitle}</p>
-
-          <dl className="slot-card__specs">
-            <div>
-              <dt>Safety</dt>
-              <dd>{item.certification}</dd>
-            </div>
-            <div>
-              <dt>Shell</dt>
-              <dd>{item.shellSpec}</dd>
-            </div>
-          </dl>
         </div>
       </Link>
 
-      <div className="slot-card__foot">
-        <div className="slot-card__price-wrap">
+      {/* 2 & 3. PRODUCT INFO & DETAILS */}
+      <div className="slot-card__body">
+        <div className="slot-card__brand-row">
+          <span className="slot-card__brand">{item.brand || 'AXOR Helmets'}</span>
+          <span className="slot-card__cat">{item.category}</span>
+        </div>
+
+        <h3 className="slot-card__title">
+          <Link to={`/showroom/${item.id}`} className="slot-card__title-link">
+            {item.title}
+          </Link>
+        </h3>
+        <p className="slot-card__subtitle">{item.subtitle}</p>
+
+        {/* 3. PRODUCT PRICE */}
+        <div className="slot-card__price-row">
           <span className="slot-card__price">{item.priceLabel}</span>
           <span className="slot-card__mrp-note">
-            {item.referenceNote || 'Reference MRP – confirm with showroom'}
+            {item.referenceNote || 'Reference MRP'}
           </span>
         </div>
-        <div className="slot-card__actions">
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="slot-card__wa-btn"
-            aria-label={`Enquire about ${item.title} on WhatsApp`}
+
+        {/* 4. STOCK AVAILABILITY / STATUS */}
+        <div className="slot-card__stock-row">
+          <span className={`slot-card__stock-pill slot-card__stock-pill--${stockBadge.classModifier}`}>
+            <span className="slot-card__stock-dot" aria-hidden="true" />
+            {stockBadge.badgeText}
+          </span>
+          {item.certification && (
+            <span className="slot-card__cert-tag">{item.certification.split(',')[0]}</span>
+          )}
+        </div>
+      </div>
+
+      {/* 5, 6 & 7. ACTION CONTROLS */}
+      <div className="slot-card__controls">
+        {/* 5. COMPARE & WISHLIST CONTROLS */}
+        <div className="slot-card__aux-actions">
+          <button
+            type="button"
+            className={`slot-card__aux-btn ${wishlisted ? 'is-active' : ''}`}
+            onClick={() => toggleWishlist(item.id)}
+            aria-label={wishlisted ? `Remove ${item.title} from wishlist` : `Add ${item.title} to wishlist`}
+            title={wishlisted ? 'Wishlisted' : 'Add to Wishlist'}
           >
-            <WhatsAppIcon size={13} />
-            <span>Enquire</span>
-          </a>
-          <Link to={`/showroom/${item.id}`} className="slot-card__inspect-btn" aria-label={`View full details for ${item.title}`}>
-            <span>Details</span>
-            <ArrowUpRight size={14} className="slot-card__arrow" aria-hidden="true" />
+            <Heart size={15} fill={wishlisted ? 'currentColor' : 'none'} />
+            <span>{wishlisted ? 'Saved' : 'Wishlist'}</span>
+          </button>
+
+          <button
+            type="button"
+            className={`slot-card__aux-btn ${compared ? 'is-active' : ''}`}
+            onClick={() => {
+              if (compared) removeFromCompare(item.id);
+              else addToCompare(item);
+            }}
+            aria-label={compared ? `Remove ${item.title} from comparison` : `Add ${item.title} to comparison`}
+            title={compared ? 'In comparison' : 'Compare'}
+          >
+            <Scale size={15} />
+            <span>{compared ? 'Comparing' : 'Compare'}</span>
+          </button>
+        </div>
+
+        {/* 6. ADD TO CART PRIMARY BUTTON */}
+        <button
+          type="button"
+          className="slot-card__cart-btn"
+          onClick={() => addToCart(item, 'M')}
+          aria-label={`Add ${item.title} to cart`}
+        >
+          <ShoppingBag size={16} />
+          <span>Add To Cart</span>
+        </button>
+
+        {/* 7. VIEW DETAILS & CONTACT FOOTER */}
+        <div className="slot-card__bottom-row">
+          <Link
+            to={`/showroom/${item.id}`}
+            className="slot-card__details-btn"
+            aria-label={`View ${item.title} full details`}
+          >
+            <span>View Details</span>
+            <ArrowRight size={13} className="slot-card__arrow" />
           </Link>
+
+          <div className="slot-card__secondary-links">
+            <button
+              type="button"
+              className={`slot-card__icon-link ${inEnquiry ? 'is-added' : ''}`}
+              onClick={() => addHelmetToEnquiry(item)}
+              title={inEnquiry ? 'Added to WhatsApp Enquiry' : 'Add to WhatsApp Enquiry'}
+              aria-label="Add to WhatsApp Enquiry list"
+            >
+              <span>{inEnquiry ? '✓' : '+'}</span>
+            </button>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="slot-card__icon-link slot-card__icon-link--wa"
+              aria-label={`Enquire about ${item.title} on WhatsApp`}
+              title="Chat on WhatsApp"
+            >
+              <WhatsAppIcon size={14} />
+            </a>
+          </div>
         </div>
       </div>
     </motion.article>

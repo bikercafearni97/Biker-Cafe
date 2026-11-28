@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei';
 import { Eye, EyeOff, RotateCw, Sparkles } from 'lucide-react';
 import * as THREE from 'three';
-import { SHOWROOM_FINISHES } from '../../data/showroomPlaceholders';
+import { SHOWROOM_FINISHES, SHOWROOM_VISOR_TINTS } from '../../data/showroomPlaceholders';
 import HelmetModel from './HelmetModel';
 import './HelmetStage.css';
 
@@ -79,7 +79,11 @@ function useDeviceProfile() {
 
 function useAdaptiveDpr(profile, maxDesktop = 1.5) {
   return useMemo(() => {
-    if (profile.isMobile) return profile.isLowCore ? 0.85 : 0.9;
+    if (profile.isMobile) {
+      const nativeDpr = typeof window !== 'undefined' ? window.devicePixelRatio : 1;
+      // Low-core devices: cap at 1.0 to avoid GPU pressure; mid/high-end: allow up to 1.5 (≈720p quality)
+      return profile.isLowCore ? Math.min(nativeDpr, 1.0) : Math.min(nativeDpr, 1.5);
+    }
     if (profile.isLowCore) return 1;
     return [1, maxDesktop];
   }, [profile, maxDesktop]);
@@ -234,6 +238,7 @@ export default function HelmetStage({
       SHOWROOM_FINISHES.find((f) => f.id === initialFinishId) || SHOWROOM_FINISHES[0]
     );
   }
+  const [activeVisorTint, setActiveVisorTint] = useState(() => SHOWROOM_VISOR_TINTS[0]);
   const [visorOpen, setVisorOpen] = useState(false);
   const [deferMount, setDeferMount] = useState(suspended);
   const stageRef = useRef(null);
@@ -305,16 +310,24 @@ export default function HelmetStage({
   };
 
   if (mode === 'intro') {
+    // Adapt camera for portrait mobile: wider FOV + slightly closer to show the full helmet clearly
+    const isMobilePortrait =
+      deviceProfile.isMobile &&
+      typeof window !== 'undefined' &&
+      window.innerHeight > window.innerWidth;
+    const introFov = isMobilePortrait ? 42 : 35;
+    const introCamZ = isMobilePortrait ? 6.2 : 7.2;
+
     return (
       <div ref={stageRef} className="helmet-stage helmet-stage--intro">
         <Canvas
           shadows={false}
           dpr={adaptiveDpr}
           frameloop={shouldRenderFrame ? 'always' : 'never'}
-          camera={{ position: [0, 0.1, 7.2], fov: 35 }}
+          camera={{ position: [0, 0.1, introCamZ], fov: introFov }}
           gl={{
-            antialias: !deviceProfile.isConstrained,
-            powerPreference: deviceProfile.isConstrained ? 'default' : 'high-performance',
+            antialias: !deviceProfile.isLowCore,
+            powerPreference: deviceProfile.isLowCore ? 'default' : 'high-performance',
             alpha: true,
           }}
         >
@@ -445,6 +458,7 @@ export default function HelmetStage({
             <Suspense fallback={null}>
               <HelmetModel
                 finish={activeFinish}
+                visorTint={activeVisorTint}
                 reducedMotion={reducedMotion}
                 interactingRef={interactingRef}
                 pointerRef={pointerRef}
@@ -499,6 +513,30 @@ export default function HelmetStage({
                   aria-hidden="true"
                 />
                 <span>{finish.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Visor Tint Selector (Stage 6.17 Advanced 3D Experience) */}
+        <div className="helmet-stage__visor-tints">
+          {SHOWROOM_VISOR_TINTS.map((tint) => {
+            const active = tint.id === activeVisorTint.id;
+            return (
+              <button
+                key={tint.id}
+                type="button"
+                className={`helmet-stage__swatch ${active ? 'is-active' : ''}`}
+                onClick={() => setActiveVisorTint(tint)}
+                aria-pressed={active}
+                title={`Shield: ${tint.label}`}
+              >
+                <span
+                  className="helmet-stage__swatch-chip"
+                  style={{ background: tint.color }}
+                  aria-hidden="true"
+                />
+                <span>{tint.label}</span>
               </button>
             );
           })}

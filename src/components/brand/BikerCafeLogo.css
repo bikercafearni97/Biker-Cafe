@@ -10,9 +10,23 @@
   filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
 }
 
-@media (max-width: 768px) {
-  .bc-logo__mark {
-    filter: none;
+@media (max-width: 480px) {
+  .bc-logo {
+    gap: 0.5rem;
+  }
+
+  .bc-logo--sm .bc-logo__mark {
+    width: 28px;
+    height: 25px;
+  }
+
+  .bc-logo--sm .bc-logo__title {
+    font-size: 0.84rem;
+    letter-spacing: 0.1em;
+  }
+
+  .bc-logo--sm .bc-logo__subtitle {
+    display: none;
   }
 }
 

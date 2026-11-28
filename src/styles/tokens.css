@@ -1,5 +1,5 @@
 :root {
-  /* Surface Palette — Obsidian & Charcoal */
+  /* Surface Palette — Obsidian & Charcoal (Dark default) */
   --bg-void: #07080b;
   --bg-primary: #0b0c10;
   --bg-elevated: #12141b;
@@ -53,4 +53,32 @@
   /* Motion */
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Light Theme Variables */
+[data-theme='light'] {
+  --bg-void: #f3f5f8;
+  --bg-primary: #ffffff;
+  --bg-elevated: #e9ecf2;
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.85);
+
+  --silver-bright: #0c0f16;
+  --silver-primary: #2d3340;
+  --silver-muted: #5e6676;
+  --silver-dim: #9aa2b0;
+  --metal-gradient: linear-gradient(
+    135deg,
+    #1e222a 0%,
+    #414754 38%,
+    #5e6676 68%,
+    #0c0f16 100%
+  );
+
+  --border-subtle: rgba(15, 20, 30, 0.08);
+  --border-metal: rgba(15, 20, 30, 0.18);
+  --border-specular: rgba(0, 0, 0, 0.04);
+  --surface-panel: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(243, 245, 248, 0.98) 100%);
+
+  --shadow-card: 0 20px 48px -20px rgba(15, 20, 30, 0.12);
 }

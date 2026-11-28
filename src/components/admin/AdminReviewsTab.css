@@ -1,0 +1,212 @@
+.admin-reviews-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-reviews-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34d399;
+  font-size: 0.88rem;
+}
+
+.admin-reviews-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.admin-reviews-search {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #111111;
+  border: 1px solid var(--border-metal);
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  min-width: 200px;
+  max-width: 100%;
+  flex-grow: 1;
+}
+
+.admin-reviews-search input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--silver-bright);
+  font-size: 0.88rem;
+  width: 100%;
+}
+
+.admin-reviews-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.admin-reviews-refresh {
+  background: #111111;
+  border: 1px solid var(--border-metal);
+  border-radius: var(--radius-sm);
+  color: var(--silver-muted);
+  padding: 0.6rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+
+.admin-reviews-refresh:hover {
+  color: var(--silver-bright);
+}
+
+.admin-reviews-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border-metal);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+}
+
+.admin-reviews-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.admin-reviews-table th {
+  padding: 0.85rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border-metal);
+  color: var(--silver-muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-reviews-table td {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: middle;
+}
+
+.cell-product strong {
+  display: block;
+  color: var(--silver-bright);
+}
+
+.model-id {
+  font-size: 0.72rem;
+  color: var(--silver-muted);
+  font-family: var(--font-mono);
+}
+
+.cell-author strong {
+  display: block;
+  color: var(--silver-bright);
+}
+
+.verified-badge-mini {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  color: #34d399;
+  font-family: var(--font-mono);
+}
+
+.stars-mini {
+  display: flex;
+  gap: 2px;
+}
+
+.comment-headline {
+  display: block;
+  font-size: 0.88rem;
+  color: var(--silver-bright);
+  margin-bottom: 0.2rem;
+}
+
+.comment-body {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--silver-muted);
+  max-width: 380px;
+  line-height: 1.45;
+}
+
+.reported-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+  font-size: 0.75rem;
+}
+
+.moderation-chip {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.moderation-chip.pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+.moderation-chip.approved {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+
+.moderation-chip.hidden {
+  background: rgba(107, 114, 128, 0.2);
+  color: #9ca3af;
+}
+
+.btn-action {
+  background: #111111;
+  border: 1px solid var(--border-metal);
+  color: var(--silver-muted);
+  border-radius: 4px;
+  padding: 0.35rem;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+
+.btn-action.approve:hover {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  color: #34d399;
+}
+
+.btn-action.hide:hover {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: #f59e0b;
+  color: #fbbf24;
+}
+
+.btn-action.delete:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: #ef4444;
+  color: #fca5a5;
+}

@@ -32,6 +32,23 @@ export const SHOWROOM_FINISHES = [
     metalColor: '#edf1f7',
     roughness: 0.12,
   },
+  {
+    id: 'stealth-matte-black',
+    label: 'Stealth Matte',
+    shellColor: '#0a0a0c',
+    stripeColor: '#3f3f46',
+    visorColor: '#050507',
+    visorSheen: '#71717a',
+    metalColor: '#52525b',
+    roughness: 0.78,
+  },
+];
+
+export const SHOWROOM_VISOR_TINTS = [
+  { id: 'dark-smoke', label: 'Dark Smoke', color: '#0c0d12', metalness: 0.88, roughness: 0.05, transmission: 0 },
+  { id: 'iridium-red', label: 'Iridium Red', color: '#880e14', metalness: 0.95, roughness: 0.03, transmission: 0 },
+  { id: 'iridium-blue', label: 'Iridium Blue', color: '#0c2e59', metalness: 0.94, roughness: 0.03, transmission: 0 },
+  { id: 'clear-pinlock', label: 'Clear Pinlock', color: '#ffffff', metalness: 0.08, roughness: 0.02, transmission: 0.9 },
 ];
 
 export const SHOWROOM_CATEGORIES = [

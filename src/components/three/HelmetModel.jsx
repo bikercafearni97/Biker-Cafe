@@ -64,6 +64,7 @@ function getCarbonFiberTextures() {
  */
 export default function HelmetModel({
   finish,
+  visorTint,
   reducedMotion = false,
   interactingRef,
   pointerRef,
@@ -366,7 +367,10 @@ export default function HelmetModel({
   const isDarkCarbon = !finish || finish.id === 'obsidian-carbon';
   const shellColor = isDarkCarbon ? '#1d2029' : finish.shellColor;
   const stripeColor = finish?.stripeColor ?? '#e11d2a';
-  const visorColor = finish?.visorColor ?? '#0d121c';
+  const visorColor = visorTint?.color ?? (finish?.visorColor ?? '#0d121c');
+  const visorMetalness = visorTint?.metalness ?? 0.88;
+  const visorRoughness = visorTint?.roughness ?? 0.05;
+  const visorTransmission = visorTint?.transmission ?? 0;
   const metalColor = finish?.metalColor ?? '#c8d0dc';
   const shellRoughness = finish?.roughness ?? 0.22;
 
@@ -445,8 +449,11 @@ export default function HelmetModel({
           <mesh geometry={geos.visorGeo}>
             <meshPhysicalMaterial
               color={visorColor}
-              metalness={0.88}
-              roughness={0.05}
+              metalness={visorMetalness}
+              roughness={visorRoughness}
+              transmission={visorTransmission}
+              transparent={visorTransmission > 0}
+              opacity={visorTransmission > 0 ? 0.75 : 1}
               clearcoat={1}
               clearcoatRoughness={0.03}
               envMapIntensity={1.55}

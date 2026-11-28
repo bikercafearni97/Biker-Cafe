@@ -16,7 +16,7 @@ service cloud.firestore {
 
     function isValidNewEnquiry() {
       let data = request.resource.data;
-      let allowedKeys = [
+      let baseKeys = [
         'name',
         'contact',
         'topic',
@@ -25,9 +25,19 @@ service cloud.firestore {
         'createdAt',
         'source'
       ];
+      let allowedKeys = [
+        'name',
+        'contact',
+        'topic',
+        'message',
+        'status',
+        'createdAt',
+        'source',
+        'userId'
+      ];
 
       return data.keys().hasOnly(allowedKeys)
-        && data.keys().hasAll(allowedKeys)
+        && data.keys().hasAll(baseKeys)
         && isNonEmptyBoundedString(data.name, 2, 100, 120)
         && isNonEmptyBoundedString(data.contact, 5, 120, 140)
         && isNonEmptyBoundedString(data.topic, 2, 80, 100)
@@ -37,12 +47,226 @@ service cloud.firestore {
         && data.source is string
         && data.source == 'website'
         && data.createdAt is timestamp
-        && data.createdAt == request.time;
+        && data.createdAt == request.time
+        && (!('userId' in data) || (request.auth != null && data.userId == request.auth.uid));
+    }
+
+    function isValidUserProfile(userId) {
+      let data = request.resource.data;
+      let allowedKeys = [
+        'uid',
+        'displayName',
+        'email',
+        'photoURL',
+        'createdAt',
+        'theme',
+        'wishlist',
+        'recentViewed',
+        'addresses',
+        'loyaltyPoints'
+      ];
+
+      return request.auth != null
+        && request.auth.uid == userId
+        && data.keys().hasOnly(allowedKeys)
+        // uid field if present must match user's auth UID
+        && (!('uid' in data) || data.uid == userId)
+        // displayName validation
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 120))
+        // email validation
+        && (!('email' in data) || (data.email is string && data.email.size() <= 150))
+        // photoURL validation
+        && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 600))
+        // createdAt validation
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 50))
+        // theme map validation
+        && (!('theme' in data) || (
+          data.theme is map
+          && data.theme.keys().hasOnly(['mode', 'accent'])
+          && (!('mode' in data.theme) || (data.theme.mode is string && data.theme.mode.size() <= 20))
+          && (!('accent' in data.theme) || (data.theme.accent is string && data.theme.accent.size() <= 40))
+        ))
+        // wishlist array validation
+        && (!('wishlist' in data) || (
+          data.wishlist is list
+          && data.wishlist.size() <= 100
+        ))
+        // recentViewed array validation
+        && (!('recentViewed' in data) || (
+          data.recentViewed is list
+          && data.recentViewed.size() <= 25
+        ))
+        // addresses array validation (Stage 6.6)
+        && (!('addresses' in data) || (
+          data.addresses is list
+          && data.addresses.size() <= 20
+        ))
+        // loyaltyPoints validation (Stage 6.15)
+        && (!('loyaltyPoints' in data) || (data.loyaltyPoints is number));
     }
 
     match /enquiries/{enquiryId} {
       allow create: if isValidNewEnquiry();
       allow get, list, update, delete: if isAdmin();
+    }
+
+    match /showroomProducts/{productId} {
+      // Admin can read all products; public visitors can read only visible products
+      allow get: if isAdmin() || resource.data.visible == true;
+      allow list: if isAdmin() || resource.data.visible == true;
+
+      // Only admin can add, edit, or delete products
+      allow create, update, delete: if isAdmin();
+    }
+
+    match /inventoryHistory/{logId} {
+      // Private administrative stock adjustment logs - Admin only
+      allow get, list, create: if isAdmin();
+      allow update, delete: if false; // immutable audit log
+    }
+
+    // Admin Notification Collection (Admin only for full control, system/guest can create)
+    match /adminNotifications/{notificationId} {
+      allow get, list, update, delete: if isAdmin();
+      allow create: if true;
+    }
+
+    // Orders Collection (Stage 6.7 Checkout & Payment)
+    match /orders/{orderId} {
+      // Anyone (guest or signed-in customer) can create an order with pending status
+      allow create: if request.resource.data.status == 'pending'
+        && request.resource.data.paymentStatus == 'pending'
+        && request.resource.data.items is list
+        && request.resource.data.items.size() > 0
+        && request.resource.data.items.size() <= 50;
+
+      // Admin has full access to view, list, update status, quote delivery, and delete
+      allow get, list, update, delete: if isAdmin();
+
+      // Customer can read only their own individual order
+      allow get: if request.auth != null && resource.data.customer.uid == request.auth.uid;
+
+      // Customer can list only queries filtered strictly by their own customer.uid
+      allow list: if request.auth != null && resource.data.customer.uid == request.auth.uid;
+
+      // Customer can cancel only their own pending order
+      allow update: if request.auth != null
+        && resource.data.customer.uid == request.auth.uid
+        && resource.data.status == 'pending'
+        && request.resource.data.status == 'cancelled';
+    }
+
+    // Product Reviews Collection (Stage 6.10)
+    match /productReviews/{reviewId} {
+      // Anyone can read approved reviews; admin can read all reviews
+      allow get: if isAdmin() || resource.data.status == 'approved';
+      allow list: if isAdmin() || resource.data.status == 'approved';
+
+      // Authenticated customers can submit a review with status == 'pending'
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.rating >= 1
+        && request.resource.data.rating <= 5
+        && request.resource.data.comment is string
+        && request.resource.data.comment.size() <= 1200;
+
+      // Customer can update/edit their own review (or report)
+      allow update: if (request.auth != null && resource.data.userId == request.auth.uid)
+        || isAdmin()
+        || (request.auth != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isReported', 'reportReason', 'updatedAt']));
+
+      // Only admin or the author can delete a review
+      allow delete: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+    }
+
+    // Coupons and Offers Collection (Stage 6.12)
+    match /coupons/{couponId} {
+      // Anyone can check a coupon by ID to validate at checkout
+      allow get: if true;
+      allow list: if isAdmin();
+
+      // Only admin can create, update, or delete coupons
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Homepage Content Management (CMS) (Stage 6.13)
+    match /homepageContent/{contentId} {
+      // Publicly viewable so all visitors see live promotional banners & announcements
+      allow get: if true;
+      allow list: if true;
+
+      // Only authorized admin can edit homepage CMS content
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Community Posts Collection (Stage 6.14)
+    match /communityPosts/{postId} {
+      // Public read for approved posts or for admin
+      allow get: if true;
+      allow list: if true;
+
+      // Authenticated riders can create posts
+      allow create: if request.auth != null
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.title is string
+        && request.resource.data.title.size() <= 150
+        && request.resource.data.content is string
+        && request.resource.data.content.size() <= 5000;
+
+      // Author or admin can edit/delete; any authenticated rider can like or add comment
+      allow update: if request.auth != null && (
+        resource.data.userId == request.auth.uid
+        || isAdmin()
+        || request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes', 'likeCount', 'comments', 'commentCount'])
+      );
+
+      allow delete: if isAdmin() || (request.auth != null && resource.data.userId == request.auth.uid);
+    }
+
+    // Community Events Collection (Stage 6.14)
+    match /communityEvents/{eventId} {
+      // Public read
+      allow get, list: if true;
+
+      // Admin can create/delete
+      allow create, delete: if isAdmin();
+
+      // Admin can update, or authenticated riders can update RSVP attendance
+      allow update: if isAdmin() || (
+        request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['attendees', 'attendeeCount'])
+      );
+    }
+
+    match /users/{userId} {
+      // Customer-isolated: the authenticated owner can access their own document, and Admin can read for customer management
+      allow get: if (request.auth != null && request.auth.uid == userId) || isAdmin();
+      allow create, update: if isValidUserProfile(userId) || isAdmin();
+      allow delete: if request.auth != null && request.auth.uid == userId;
+      // Admin only can list users for customer management (prevents public user enumeration)
+      allow list: if isAdmin();
+
+      // Customer Subcollection: Notifications
+      match /notifications/{notificationId} {
+        // Customer can read and delete their own notifications
+        allow get, list, delete: if request.auth != null && request.auth.uid == userId;
+
+        // Customer can only mark as read (cannot modify text, title, or reference)
+        allow update: if request.auth != null
+          && request.auth.uid == userId
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead'])
+          && request.resource.data.isRead is bool;
+
+        // Only the authorized admin can create a notification in a customer's account
+        allow create: if isAdmin();
+      }
+
+      // Customer Subcollection: Loyalty Points History (Stage 6.15)
+      match /loyaltyHistory/{historyId} {
+        allow get, list: if (request.auth != null && request.auth.uid == userId) || isAdmin();
+        allow create: if (request.auth != null && request.auth.uid == userId) || isAdmin();
+      }
     }
 
     match /{document=**} {

@@ -1,0 +1,169 @@
+.admin-model-uploader {
+  margin-top: 14px;
+  padding: 16px;
+  background: rgba(14, 17, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md, 10px);
+}
+
+.admin-model-uploader__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-model-uploader__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-silver, #e2e8f0);
+  margin-bottom: 4px;
+}
+
+.admin-model-uploader__sub {
+  font-size: 0.76rem;
+  color: var(--color-silver-muted, #94a3b8);
+  margin: 0;
+}
+
+.admin-model-enable-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-silver, #cbd5e1);
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.admin-model-enable-toggle input {
+  accent-color: var(--color-racing-red, #e11d2a);
+}
+
+.admin-model-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(225, 29, 42, 0.15);
+  border: 1px solid rgba(225, 29, 42, 0.3);
+  border-radius: var(--radius-sm, 6px);
+  color: #fca5a5;
+  font-size: 0.78rem;
+  margin-bottom: 12px;
+}
+
+.admin-model-progress-wrap {
+  margin-bottom: 12px;
+}
+
+.admin-model-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.admin-model-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  transition: width 0.2s ease;
+}
+
+.admin-model-progress-text {
+  font-size: 0.72rem;
+  color: #93c5fd;
+}
+
+.admin-model-action-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.admin-model-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm, 6px);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.admin-model-btn--primary {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: #3b82f6;
+  color: #93c5fd;
+}
+
+.admin-model-btn--primary:hover:not(:disabled) {
+  background: #3b82f6;
+  color: #fff;
+}
+
+.admin-model-btn--ghost {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-silver, #cbd5e1);
+}
+
+.admin-model-btn--ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.admin-model-btn--danger {
+  background: rgba(225, 29, 42, 0.1);
+  border-color: rgba(225, 29, 42, 0.3);
+  color: #fca5a5;
+}
+
+.admin-model-btn--danger:hover {
+  background: var(--color-racing-red, #e11d2a);
+  color: #fff;
+}
+
+.admin-model-hidden-input {
+  display: none;
+}
+
+.admin-model-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 0.75rem;
+  color: var(--color-silver-muted, #94a3b8);
+}
+
+.admin-model-check {
+  color: #22c55e;
+}
+
+.admin-model-preview-container {
+  margin-top: 14px;
+}
+
+.admin-model-spin {
+  animation: adminModelSpin 1s linear infinite;
+}
+
+@keyframes adminModelSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

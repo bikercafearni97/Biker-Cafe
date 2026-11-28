@@ -1,0 +1,198 @@
+.size-guide {
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  background: var(--surface-panel);
+  border: 1px solid var(--border-metal);
+  border-radius: var(--radius-md);
+}
+
+.size-guide__head {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.size-guide__icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--red-subtle);
+  border: 1px solid var(--border-red);
+  color: var(--red-bright);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.size-guide__title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--silver-bright);
+}
+
+.size-guide__subtitle {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--silver-muted);
+}
+
+.size-guide__instructions {
+  background: rgba(207, 213, 223, 0.03);
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+}
+
+.size-guide__instructions h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: var(--silver-bright);
+}
+
+.size-guide__instructions ol {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--silver-primary);
+  display: grid;
+  gap: 0.35rem;
+}
+
+.size-guide__calculator {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.size-guide__calculator label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-muted);
+}
+
+.size-guide__calc-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 220px;
+}
+
+.size-guide__calc-row input {
+  flex: 1;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-metal);
+  background: var(--bg-void);
+  color: var(--silver-bright);
+  font-size: 1rem;
+  font-family: var(--font-mono);
+  min-height: 44px;
+}
+
+.size-guide__calc-row input:focus {
+  outline: 2px solid var(--red-bright);
+  border-color: var(--red-bright);
+}
+
+.size-guide__unit {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--silver-muted);
+}
+
+.size-guide__result {
+  margin-top: 0.5rem;
+  padding: 0.85rem 1rem;
+  background: var(--red-subtle);
+  border: 1px solid var(--border-red);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.size-guide__badge {
+  font-family: var(--font-tech);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--red-bright);
+}
+
+.size-guide__result-text {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--silver-bright);
+}
+
+.size-guide__table-wrap {
+  overflow-x: auto;
+}
+
+.size-guide__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.size-guide__table th {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border-metal);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--silver-muted);
+}
+
+.size-guide__table td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--silver-primary);
+}
+
+.size-guide__row--active td {
+  background: var(--red-subtle);
+  color: var(--silver-bright);
+  font-weight: 700;
+}
+
+.size-guide__notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  background: rgba(207, 213, 223, 0.04);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  color: var(--silver-muted);
+  line-height: 1.45;
+}
+
+.size-guide__wa-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-metal);
+  background: var(--bg-void);
+  color: var(--silver-bright);
+  font-family: var(--font-tech);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+  min-height: 44px;
+}
+
+.size-guide__wa-btn:hover {
+  border-color: var(--red-bright);
+  color: #fff;
+  box-shadow: 0 0 20px var(--red-subtle);
+}

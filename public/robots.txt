@@ -1,9 +1,8 @@
-# robots.txt for BIKER CAFE — ARNI (Pre-launch local configuration)
-# DEPLOYMENT STRATEGY: Replace https://YOUR_PRODUCTION_DOMAIN below with your
-# actual live domain (without a trailing slash) before publishing the site.
+# robots.txt for BIKER CAFE — ARNI
+# Official production domain: https://bikercafe.netlify.app
 
 User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://YOUR_PRODUCTION_DOMAIN/sitemap.xml
+Sitemap: https://bikercafe.netlify.app/sitemap.xml

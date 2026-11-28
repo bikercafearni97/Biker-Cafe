@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -7,8 +7,14 @@ import {
   Box,
   Check,
   CheckCircle2,
+  Heart,
   Image as ImageIcon,
+  Package,
+  Plus,
+  Ruler,
+  Scale,
   ShieldAlert,
+  ShoppingBag,
   Wind,
 } from 'lucide-react';
 import {
@@ -19,12 +25,20 @@ import {
   SHOWROOM_SIZES,
   SHOWROOM_SLOTS,
 } from '../data/showroomPlaceholders';
+import { useShowroomProducts } from '../hooks/useShowroomProducts';
+import { useCustomerData } from '../context/CustomerDataContext';
+import { useSmartEnquiry } from '../context/SmartEnquiryContext';
+import { useCart } from '../context/CartContext';
+import { getCustomerStockBadge } from '../services/inventoryService';
+import HelmetSizeGuide from '../components/showroom/HelmetSizeGuide';
+import ProductReviewsSection from '../components/reviews/ProductReviewsSection';
 import MagneticButton from '../components/ui/MagneticButton';
 import WhatsAppIcon from '../components/ui/WhatsAppIcon';
 import PageSeo from '../components/seo/PageSeo';
 import './HelmetDetailPage.css';
 
 const HelmetStage = lazy(() => import('../components/three/HelmetStage'));
+const ModelViewer3D = lazy(() => import('../components/three/ModelViewer3D'));
 
 function DetailStageFallback() {
   return (
@@ -39,9 +53,27 @@ export default function HelmetDetailPage() {
   const { id } = useParams();
   const [selectedSize, setSelectedSize] = useState('M');
   const [mediaView, setMediaView] = useState('photo');
+  const [selectedPhotoIndex, setSelectedPhotoIndex] = useState(0);
+  const [showSizeGuide, setShowSizeGuide] = useState(false);
 
-  const slotIndex = SHOWROOM_SLOTS.findIndex((item) => item.id === id);
-  const slot = slotIndex >= 0 ? SHOWROOM_SLOTS[slotIndex] : null;
+  const { products, loading: productsLoading } = useShowroomProducts();
+  const activeCatalog = products.length > 0 ? products : SHOWROOM_SLOTS;
+
+  const { isWishlisted, toggleWishlist, isInCompare, addToCompare, removeFromCompare, recordView } =
+    useCustomerData();
+  const { addHelmetToEnquiry, isHelmetInEnquiry } = useSmartEnquiry();
+  const { addToCart } = useCart();
+
+  const slotIndex = activeCatalog.findIndex((item) => item.id === id);
+  const slot = slotIndex >= 0 ? activeCatalog[slotIndex] : null;
+
+  // Record recently viewed once slot is available
+  useEffect(() => {
+    if (slot) {
+      recordView(slot);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slot?.id]);
 
   const defaultFinish =
     SHOWROOM_FINISHES.find((f) => f.id === slot?.previewFinish) || SHOWROOM_FINISHES[0];
@@ -52,6 +84,21 @@ export default function HelmetDetailPage() {
     setPrevSlotId(id);
     setSelectedFinish(defaultFinish);
     setMediaView('photo');
+    setSelectedPhotoIndex(0);
+    setShowSizeGuide(false);
+  }
+
+  if (!slot && productsLoading) {
+    return (
+      <div className="detail-missing container section-pad">
+        <PageSeo
+          title="Loading Helmet Details... | BIKER CAFE"
+          description="Loading helmet specifications."
+          robots="noindex, nofollow"
+        />
+        <DetailStageFallback />
+      </div>
+    );
   }
 
   if (!slot) {
@@ -72,10 +119,20 @@ export default function HelmetDetailPage() {
   }
 
   const prevSlot =
-    SHOWROOM_SLOTS[(slotIndex - 1 + SHOWROOM_SLOTS.length) % SHOWROOM_SLOTS.length];
-  const nextSlot = SHOWROOM_SLOTS[(slotIndex + 1) % SHOWROOM_SLOTS.length];
-  const webpSrc = slot.image.replace(/\.(jpe?g|png)$/i, '.webp');
+    activeCatalog[(slotIndex - 1 + activeCatalog.length) % activeCatalog.length];
+  const nextSlot = activeCatalog[(slotIndex + 1) % activeCatalog.length];
+
+  // Multi-image gallery support: fall back to single slot.image
+  const galleryImages = Array.isArray(slot.images) && slot.images.length > 0
+    ? slot.images
+    : [{ url: slot.image, alt: slot.title, isPrimary: true }];
+
+  const currentDisplayImage = galleryImages[selectedPhotoIndex]?.url || slot.image || '';
+  const webpSrc = currentDisplayImage.replace(/\.(jpe?g|png)$/i, '.webp');
   const imgSize = slot.id === 'axor-retro-jet' ? 1080 : 1200;
+
+  // Stock status badge configuration
+  const stockBadge = getCustomerStockBadge(slot);
 
   const whatsappMessage =
     mediaView === '3d'
@@ -132,7 +189,7 @@ export default function HelmetDetailPage() {
                     )}
                     <span className="detail-media-tab__label">
                       <ImageIcon size={14} aria-hidden="true" />
-                      Product Photo
+                      Product Photos ({galleryImages.length})
                     </span>
                   </button>
 
@@ -164,7 +221,7 @@ export default function HelmetDetailPage() {
                     <picture style={{ display: 'contents' }}>
                       <source srcSet={webpSrc} type="image/webp" />
                       <img
-                        src={slot.image}
+                        src={currentDisplayImage}
                         alt={`${slot.title} — ${slot.subtitle}`}
                         width={imgSize}
                         height={imgSize}
@@ -174,22 +231,55 @@ export default function HelmetDetailPage() {
                       />
                     </picture>
                   </div>
+
+                  {/* Multi-Photo Thumbnail Bar */}
+                  {galleryImages.length > 1 && (
+                    <div className="detail-photo-gallery-thumbs" role="group" aria-label="Product gallery thumbnails">
+                      {galleryImages.map((img, idx) => (
+                        <button
+                          key={img.url || idx}
+                          type="button"
+                          className={`detail-gallery-thumb ${selectedPhotoIndex === idx ? 'is-active' : ''}`}
+                          onClick={() => setSelectedPhotoIndex(idx)}
+                          aria-label={`View photo ${idx + 1}`}
+                        >
+                          <img src={img.url} alt={img.alt || `Thumbnail ${idx + 1}`} />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                   <p className="detail-media-caption">
-                    {slot.title} &mdash; Product photograph
+                    {slot.title} &mdash; Official photograph {galleryImages.length > 1 ? `(${selectedPhotoIndex + 1} of ${galleryImages.length})` : ''}
                   </p>
                 </div>
               ) : (
                 <div className="detail-3d-view" role="tabpanel" aria-label="3D Preview view">
-                  <Suspense fallback={<DetailStageFallback />}>
-                    <HelmetStage
-                      initialFinishId={slot.previewFinish}
-                      onFinishChange={setSelectedFinish}
-                    />
-                  </Suspense>
-                  <p className="detail-media-caption detail-media-caption--3d">
-                    Interactive 3D concept preview for finish &amp; visor demonstration &mdash; not
-                    an exact replica of the AXOR shell graphics.
-                  </p>
+                  {/* If product has custom uploaded 3D model, render with ModelViewer3D */}
+                  {slot.model3D?.enabled && slot.model3D?.url ? (
+                    <Suspense fallback={<DetailStageFallback />}>
+                      <ModelViewer3D
+                        modelUrl={slot.model3D.url}
+                        alt={`${slot.title} 3D Model`}
+                        height="440px"
+                      />
+                      <p className="detail-media-caption detail-media-caption--3d">
+                        Interactive 3D helmet model &mdash; Drag to rotate 360&deg;, scroll/pinch to zoom.
+                      </p>
+                    </Suspense>
+                  ) : (
+                    /* Fallback to existing interactive AXOR HelmetStage */
+                    <Suspense fallback={<DetailStageFallback />}>
+                      <HelmetStage
+                        initialFinishId={slot.previewFinish}
+                        onFinishChange={setSelectedFinish}
+                      />
+                      <p className="detail-media-caption detail-media-caption--3d">
+                        Interactive 3D concept preview for finish &amp; visor demonstration &mdash; not
+                        an exact replica of the AXOR shell graphics.
+                      </p>
+                    </Suspense>
+                  )}
                 </div>
               )}
             </div>
@@ -204,6 +294,10 @@ export default function HelmetDetailPage() {
           >
             <div className="detail-meta-row">
               <span className="detail-code">{slot.brand}</span>
+              <span className={`detail-stock-badge detail-stock-badge--${stockBadge.classModifier}`}>
+                <Package size={13} aria-hidden="true" />
+                {stockBadge.badgeText}
+              </span>
               <span className="detail-cat">{slot.category}</span>
             </div>
 
@@ -220,6 +314,12 @@ export default function HelmetDetailPage() {
               </span>
             </div>
 
+            {/* Customer-Facing Stock & Availability Notice */}
+            <div className={`detail-availability-banner detail-availability-banner--${stockBadge.classModifier}`}>
+              <CheckCircle2 size={16} aria-hidden="true" />
+              <span>{stockBadge.label}</span>
+            </div>
+
             <p className="detail-summary">{slot.summary}</p>
 
             {/* Official Features List */}
@@ -234,28 +334,84 @@ export default function HelmetDetailPage() {
               </ul>
             )}
 
-            {/* Fitting Size Reference (No stock claim) */}
+            {/* Fitting Size Reference */}
             <div className="detail-sizes">
               <div className="detail-sizes__head">
                 <span>Fitting Size Reference</span>
-                <span className="detail-sizes__note">Confirm availability with showroom</span>
+                <button
+                  type="button"
+                  className="detail-size-guide-toggle"
+                  onClick={() => setShowSizeGuide((prev) => !prev)}
+                >
+                  <Ruler size={13} aria-hidden="true" />
+                  <span>{showSizeGuide ? 'Hide Size Guide' : 'Size Guide & Measurement'}</span>
+                </button>
               </div>
               <div className="detail-sizes__grid" role="group" aria-label="Fitting size reference">
                 {SHOWROOM_SIZES.map((size) => {
                   const active = size === selectedSize;
+                  // If size variant exists in inventory, check if out of stock
+                  const variant = slot.inventory?.variants?.find((v) => v.size === size);
+                  const isOutOfStock = slot.inventory?.trackingEnabled && variant && Number(variant.quantity) === 0;
+
                   return (
                     <button
                       key={size}
                       type="button"
-                      className={`detail-size-btn ${active ? 'is-active' : ''}`}
+                      className={`detail-size-btn ${active ? 'is-active' : ''} ${isOutOfStock ? 'is-out-of-stock' : ''}`}
                       onClick={() => setSelectedSize(size)}
                       aria-pressed={active}
+                      title={isOutOfStock ? `${size} (Currently out of stock)` : size}
                     >
                       {size}
+                      {isOutOfStock && <span className="detail-size-btn__sub">Out</span>}
                     </button>
                   );
                 })}
               </div>
+            </div>
+
+            {/* Interactive Size Guide Accordion */}
+            {showSizeGuide && (
+              <div className="detail-size-guide-panel">
+                <HelmetSizeGuide helmetTitle={slot.title} />
+              </div>
+            )}
+
+            {/* Customer Interaction Hub: Wishlist, Compare, Multi-Enquiry */}
+            <div className="detail-customer-hub">
+              <button
+                type="button"
+                className={`detail-hub-btn ${isWishlisted(slot.id) ? 'is-active' : ''}`}
+                onClick={() => toggleWishlist(slot.id)}
+              >
+                <Heart size={15} fill={isWishlisted(slot.id) ? 'currentColor' : 'none'} />
+                <span>{isWishlisted(slot.id) ? 'Wishlisted' : 'Save to Wishlist'}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`detail-hub-btn ${isInCompare(slot.id) ? 'is-active' : ''}`}
+                onClick={() => {
+                  if (isInCompare(slot.id)) {
+                    removeFromCompare(slot.id);
+                  } else {
+                    addToCompare(slot);
+                  }
+                }}
+              >
+                <Scale size={15} />
+                <span>{isInCompare(slot.id) ? 'In Compare (3 Max)' : 'Compare Specs'}</span>
+              </button>
+
+              <button
+                type="button"
+                className={`detail-hub-btn ${isHelmetInEnquiry(slot.id) ? 'is-active' : ''}`}
+                onClick={() => addHelmetToEnquiry(slot, selectedSize)}
+              >
+                <Plus size={15} />
+                <span>{isHelmetInEnquiry(slot.id) ? 'In Multi-Enquiry' : 'Add to Multi-Enquiry'}</span>
+              </button>
             </div>
 
             {/* Official Technical Specification Table */}
@@ -295,6 +451,15 @@ export default function HelmetDetailPage() {
             </div>
 
             <div className="detail-actions">
+              <button
+                type="button"
+                className="detail-add-cart-btn"
+                onClick={() => addToCart(slot, selectedSize, selectedFinish?.id)}
+              >
+                <ShoppingBag size={18} />
+                <span>Add to Cart ({selectedSize})</span>
+              </button>
+
               <MagneticButton
                 href={buildWhatsAppUrl(whatsappMessage)}
                 target="_blank"
@@ -332,6 +497,9 @@ export default function HelmetDetailPage() {
             <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </nav>
+
+        {/* Stage 6.10 Customer Reviews & Ratings */}
+        <ProductReviewsSection productId={slot.id} productTitle={slot.title} />
       </div>
     </div>
   );

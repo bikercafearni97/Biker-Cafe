@@ -18,6 +18,7 @@ import {
   INQUIRY_TOPICS,
 } from '../data/showroomPlaceholders';
 import { ENQUIRY_LIMITS, submitEnquiry } from '../services/enquiriesService';
+import { useCustomerAuth } from '../context/CustomerAuthContext';
 import MagneticButton from '../components/ui/MagneticButton';
 import WhatsAppIcon from '../components/ui/WhatsAppIcon';
 import PageSeo from '../components/seo/PageSeo';
@@ -31,7 +32,12 @@ const INITIAL_FORM = {
 };
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState(INITIAL_FORM);
+  const { user } = useCustomerAuth();
+  const [formData, setFormData] = useState(() => ({
+    ...INITIAL_FORM,
+    name: user?.displayName || '',
+    contact: user?.email || '',
+  }));
   const [errorMsg, setErrorMsg] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedEnquiry, setSubmittedEnquiry] = useState(null);
@@ -64,10 +70,24 @@ export default function ContactPage() {
     setIsSubmitting(true);
 
     try {
-      const saved = await submitEnquiry(formData);
+      const saved = await submitEnquiry(formData, user);
       setSubmittedEnquiry(saved);
       setFormData(INITIAL_FORM);
     } catch (err) {
+      // Privacy-safe error telemetry
+      const safeErrorDetails = {
+        code: err?.code || 'unknown-error',
+        message: err?.message || 'Unknown Firestore error',
+        hasUser: Boolean(user?.uid),
+        formKeyLengths: {
+          nameLen: formData?.name?.trim()?.length || 0,
+          contactLen: formData?.contact?.trim()?.length || 0,
+          topicLen: formData?.topic?.trim()?.length || 0,
+          messageLen: formData?.message?.trim()?.length || 0,
+        },
+      };
+      console.warn('[ContactPage Submission Diagnostic]', safeErrorDetails);
+
       if (err?.code === 'permission-denied') {
         setErrorMsg(
           'Online enquiry submission is temporarily unavailable. Please reach us via WhatsApp, phone call, or email.'

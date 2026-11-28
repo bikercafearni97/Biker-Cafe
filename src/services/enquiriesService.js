@@ -54,11 +54,12 @@ export function validateEnquiryInput({ name, contact, topic, message }) {
 
 /**
  * Persist a new customer enquiry in Firestore with server timestamp and strict schema fields.
+ * If user is authenticated, securely attaches their verified auth UID.
  */
-export async function submitEnquiry(formInput) {
+export async function submitEnquiry(formInput, authUser = null) {
   const validated = validateEnquiryInput(formInput);
 
-  const docRef = await addDoc(collection(db, ENQUIRY_COLLECTION), {
+  const payload = {
     name: validated.name,
     contact: validated.contact,
     topic: validated.topic,
@@ -66,14 +67,63 @@ export async function submitEnquiry(formInput) {
     status: 'new',
     source: 'website',
     createdAt: serverTimestamp(),
-  });
-
-  return {
-    id: docRef.id,
-    ...validated,
-    status: 'new',
-    source: 'website',
   };
+
+  // Only attach userId if customer is authenticated
+  if (authUser && authUser.uid) {
+    payload.userId = authUser.uid;
+  }
+
+  // Temporary privacy-safe diagnostics for debugging permission-denied
+  const fieldTypes = {};
+  for (const [k, v] of Object.entries(payload)) {
+    fieldTypes[k] = typeof v;
+  }
+
+  const diagnosticInfo = {
+    projectId: db?.app?.options?.projectId,
+    appName: db?.app?.name,
+    targetCollection: ENQUIRY_COLLECTION,
+    databaseId: db?._databaseId?.database || '(default)',
+    payloadKeys: Object.keys(payload),
+    keyCount: Object.keys(payload).length,
+    fieldTypes,
+    fieldLengths: {
+      nameLength: payload.name?.length,
+      contactLength: payload.contact?.length,
+      topicLength: payload.topic?.length,
+      messageLength: payload.message?.length,
+    },
+    hasUserId: 'userId' in payload,
+    isAuthAttached: Boolean(authUser?.uid),
+    statusVal: payload.status,
+    sourceVal: payload.source,
+    hasServerTimestamp: Boolean(payload.createdAt),
+  };
+  console.info('[submitEnquiry Diagnostic Pre-Flight]', diagnosticInfo);
+
+  try {
+    const docRef = await addDoc(collection(db, ENQUIRY_COLLECTION), payload);
+
+    return {
+      id: docRef.id,
+      ...validated,
+      status: 'new',
+      source: 'website',
+      userId: payload.userId || null,
+    };
+  } catch (error) {
+    const errorDetails = {
+      code: error?.code,
+      name: error?.name,
+      message: error?.message,
+      targetCollection: ENQUIRY_COLLECTION,
+      databaseId: db?._databaseId?.database || '(default)',
+      projectId: db?.app?.options?.projectId,
+    };
+    console.error('[submitEnquiry Diagnostic Write Error]', errorDetails);
+    throw error;
+  }
 }
 
 /**

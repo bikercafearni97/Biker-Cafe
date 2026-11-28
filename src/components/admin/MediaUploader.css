@@ -1,0 +1,214 @@
+.admin-media-uploader {
+  margin-top: 14px;
+  padding: 16px;
+  background: rgba(14, 17, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md, 10px);
+}
+
+.admin-media-uploader__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.admin-media-uploader__title {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-silver, #e2e8f0);
+  margin-bottom: 4px;
+}
+
+.admin-media-uploader__sub {
+  font-size: 0.76rem;
+  color: var(--color-silver-muted, #94a3b8);
+  margin: 0;
+}
+
+.admin-media-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(225, 29, 42, 0.15);
+  border: 1px solid var(--color-racing-red, #e11d2a);
+  border-radius: var(--radius-sm, 6px);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-media-upload-btn:hover:not(:disabled) {
+  background: var(--color-racing-red, #e11d2a);
+  box-shadow: 0 4px 14px rgba(225, 29, 42, 0.35);
+}
+
+.admin-media-upload-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-media-hidden-input {
+  display: none;
+}
+
+.admin-media-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(225, 29, 42, 0.15);
+  border: 1px solid rgba(225, 29, 42, 0.3);
+  border-radius: var(--radius-sm, 6px);
+  color: #fca5a5;
+  font-size: 0.78rem;
+  margin-bottom: 12px;
+}
+
+.admin-media-progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.admin-media-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-racing-red, #e11d2a), #ff6b6b);
+  transition: width 0.2s ease;
+}
+
+.admin-media-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px;
+  background: rgba(10, 12, 16, 0.5);
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-sm, 6px);
+  color: var(--color-silver-muted, #94a3b8);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.admin-media-empty:hover {
+  border-color: var(--color-racing-red, #e11d2a);
+}
+
+.admin-media-empty__icon {
+  opacity: 0.6;
+}
+
+.admin-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+}
+
+.admin-media-item {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: var(--radius-sm, 6px);
+  overflow: hidden;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.admin-media-item.is-primary {
+  border-color: #fbbf24;
+  box-shadow: 0 0 10px rgba(251, 191, 36, 0.25);
+}
+
+.admin-media-item__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.admin-media-item__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 6px;
+  transition: opacity 0.2s ease;
+}
+
+.admin-media-item:hover .admin-media-item__overlay {
+  opacity: 1;
+}
+
+.admin-media-item__reorder {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.admin-media-item__btn {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.admin-media-item__btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.admin-media-item__btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.admin-media-item__btn.is-primary-active {
+  color: #fbbf24;
+}
+
+.admin-media-item__btn--delete:hover {
+  background: var(--color-racing-red, #e11d2a);
+}
+
+.admin-media-item__badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: #fbbf24;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+.admin-media-spin {
+  animation: adminMediaSpin 1s linear infinite;
+}
+
+@keyframes adminMediaSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

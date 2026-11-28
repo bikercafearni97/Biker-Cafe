@@ -1,16 +1,24 @@
-import { lazy, Suspense, useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { motion } from 'framer-motion';
 
 gsap.registerPlugin(ScrollTrigger);
 ScrollTrigger.config({ ignoreMobileResize: true });
-import { ArrowDownRight, ArrowRight, Compass, Layers, ShieldCheck } from 'lucide-react';
+import { ArrowDownRight, ArrowRight, Bell, Clock, Compass, Layers, ShieldCheck } from 'lucide-react';
 import {
   PRICE_DISCLAIMER,
   SHOWROOM_PILLARS,
   SHOWROOM_SLOTS,
 } from '../data/showroomPlaceholders';
+import {
+  subscribeAnnouncementContent,
+  getPromotionsContent,
+  getHighlightsContent,
+  DEFAULT_CMS_CONTENT,
+} from '../services/homepageCmsService';
+import { useCustomerData } from '../context/CustomerDataContext';
 import MagneticButton from '../components/ui/MagneticButton';
 import PlaceholderBadge from '../components/ui/PlaceholderBadge';
 import HelmetTelemetrySVG from '../components/graphics/HelmetTelemetrySVG';
@@ -32,6 +40,42 @@ function HelmetStageFallback() {
 
 export default function HomePage({ introActive = false }) {
   const pageRef = useRef(null);
+  const { recentViewed } = useCustomerData();
+
+  // Dynamic CMS States
+  const [announcement, setAnnouncement] = useState(DEFAULT_CMS_CONTENT.announcement);
+  const [promotions, setPromotions] = useState(DEFAULT_CMS_CONTENT.promotions);
+  const [highlights, setHighlights] = useState(DEFAULT_CMS_CONTENT.highlights);
+
+  // Subscribe to real-time Announcement updates from Firestore
+  useEffect(() => {
+    const unsubscribe = subscribeAnnouncementContent((data) => {
+      if (data) setAnnouncement(data);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchCmsData() {
+      try {
+        const [promoRes, hlRes] = await Promise.all([
+          getPromotionsContent(),
+          getHighlightsContent(),
+        ]);
+        if (!cancelled) {
+          if (promoRes && promoRes.length > 0) setPromotions(promoRes.filter((p) => p.active !== false));
+          if (hlRes && hlRes.length > 0) setHighlights(hlRes.filter((h) => h.active !== false));
+        }
+      } catch (err) {
+        console.warn('Error fetching homepage CMS content:', err);
+      }
+    }
+    fetchCmsData();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (introActive) return;
@@ -83,6 +127,87 @@ export default function HomePage({ introActive = false }) {
         description="Explore BIKER CAFE in Arni, Tamil Nadu — digital 3D helmet showcase, certified AXOR helmets, riding gears, bike modification, and motorcycle accessories."
         robots="index, follow"
       />
+
+      {/* DYNAMIC RUNNING ANNOUNCEMENT BAR (Stage 6.13 CMS) */}
+      {announcement?.enabled && announcement?.text && (
+        <aside
+          className="home-announcement-bar"
+          role="region"
+          aria-label="Showroom announcements"
+          style={{
+            backgroundColor: announcement.bgColor || '#141720',
+            borderColor: announcement.accentColor || '#e11d2a',
+          }}
+        >
+          <div className="home-announcement-bar__track">
+            {/* Lead Tag */}
+            <div className="home-announcement-bar__badge-wrap">
+              <span className="home-announcement-bar__icon" aria-hidden="true" style={{ color: announcement.accentColor || '#e11d2a' }}>
+                <Bell size={13} />
+              </span>
+              {announcement.badge && (
+                <span className="home-announcement-bar__badge" style={{ backgroundColor: announcement.accentColor || '#e11d2a' }}>
+                  {announcement.badge}
+                </span>
+              )}
+            </div>
+
+            {/* Continuous Marquee Ticker */}
+            <div className="home-announcement-bar__marquee">
+              <div className="home-announcement-bar__content">
+                <span className="home-announcement-bar__text">{announcement.text}</span>
+                {announcement.linkText && announcement.linkUrl && (
+                  <Link
+                    to={announcement.linkUrl}
+                    className="home-announcement-bar__link"
+                    style={{ color: announcement.accentColor || '#e11d2a' }}
+                  >
+                    <span>{announcement.linkText}</span>
+                    <ArrowRight size={12} aria-hidden="true" />
+                  </Link>
+                )}
+                <span className="home-announcement-bar__divider">✦</span>
+                <span className="home-announcement-bar__text">{announcement.text}</span>
+                {announcement.linkText && announcement.linkUrl && (
+                  <Link
+                    to={announcement.linkUrl}
+                    className="home-announcement-bar__link"
+                    style={{ color: announcement.accentColor || '#e11d2a' }}
+                  >
+                    <span>{announcement.linkText}</span>
+                    <ArrowRight size={12} aria-hidden="true" />
+                  </Link>
+                )}
+                <span className="home-announcement-bar__divider">✦</span>
+                <span className="home-announcement-bar__text">{announcement.text}</span>
+                {announcement.linkText && announcement.linkUrl && (
+                  <Link
+                    to={announcement.linkUrl}
+                    className="home-announcement-bar__link"
+                    style={{ color: announcement.accentColor || '#e11d2a' }}
+                  >
+                    <span>{announcement.linkText}</span>
+                    <ArrowRight size={12} aria-hidden="true" />
+                  </Link>
+                )}
+                <span className="home-announcement-bar__divider">✦</span>
+                <span className="home-announcement-bar__text">{announcement.text}</span>
+                {announcement.linkText && announcement.linkUrl && (
+                  <Link
+                    to={announcement.linkUrl}
+                    className="home-announcement-bar__link"
+                    style={{ color: announcement.accentColor || '#e11d2a' }}
+                  >
+                    <span>{announcement.linkText}</span>
+                    <ArrowRight size={12} aria-hidden="true" />
+                  </Link>
+                )}
+              </div>
+            </div>
+          </div>
+        </aside>
+      )}
+
       {/* HERO SECTION */}
       <section className="hero">
         <div className="container hero__grid">
@@ -209,14 +334,12 @@ export default function HomePage({ introActive = false }) {
               you even step into the store.
             </p>
             <div className="craft__notes">
-              <div className="craft__note">
-                <span className="craft__note-key">01 // VISOR OPTICS</span>
-                <span className="craft__note-val">[Optical Grade Specs Pending Client Input]</span>
-              </div>
-              <div className="craft__note">
-                <span className="craft__note-key">02 // SHELL COMPOSITE</span>
-                <span className="craft__note-val">[Carbon / Fiberglass Specs Pending]</span>
-              </div>
+              {highlights.map((hl) => (
+                <div key={hl.id || hl.title} className="craft__note">
+                  <span className="craft__note-key">{hl.title}</span>
+                  <span className="craft__note-val">{hl.detail}</span>
+                </div>
+              ))}
             </div>
           </motion.div>
         </div>
@@ -250,6 +373,49 @@ export default function HomePage({ introActive = false }) {
         </div>
       </section>
 
+      {/* RECENTLY VIEWED HELMETS (Shown when user has viewed helmets) */}
+      {recentViewed.length > 0 && (
+        <section className="recent-viewed-section section-pad">
+          <div className="container">
+            <div className="section-header">
+              <div>
+                <span className="eyebrow">Personal Session // Browsing History</span>
+                <h2 className="section-heading">
+                  Recently <span className="metallic-text">Viewed Helmets</span>
+                </h2>
+              </div>
+              <Link to="/profile" className="recent-viewed-link">
+                <Clock size={15} aria-hidden="true" />
+                <span>View Rider Profile</span>
+              </Link>
+            </div>
+
+            <div className="recent-viewed-grid">
+              {recentViewed.slice(0, 4).map((item) => (
+                <Link
+                  key={item.id}
+                  to={`/showroom/${item.id}`}
+                  className="recent-viewed-card"
+                >
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    width={96}
+                    height={96}
+                    loading="lazy"
+                  />
+                  <div className="recent-viewed-card__body">
+                    <strong>{item.title}</strong>
+                    <span>{item.category}</span>
+                    <span className="recent-viewed-card__price">{item.priceLabel}</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* SHOWROOM EXPERIENCE PILLARS */}
       <section id="experience" className="pillars section-pad">
         <div className="container">
@@ -279,6 +445,46 @@ export default function HomePage({ introActive = false }) {
 
       {/* CLOSING SHOWCASE */}
       <ClosingShowcase />
+
+      {/* PROMOTIONAL SHOWCASE CARDS (Stage 6.13 CMS) */}
+      {promotions.length > 0 && (
+        <section className="home-promos-section section-pad">
+          <div className="container">
+            <div className="section-header">
+              <div>
+                <span className="eyebrow">Showroom Offers &amp; Updates</span>
+                <h2 className="section-heading">
+                  Exclusive <span className="metallic-text">Rider Promotions</span>
+                </h2>
+              </div>
+            </div>
+
+            <div className="home-promos-grid">
+              {promotions.map((promo) => (
+                <article key={promo.id} className="home-promo-card">
+                  {promo.imageUrl && (
+                    <div className="home-promo-card__media">
+                      <img src={promo.imageUrl} alt={promo.title} loading="lazy" />
+                    </div>
+                  )}
+                  <div className="home-promo-card__body">
+                    {promo.badge && <span className="home-promo-card__badge">{promo.badge}</span>}
+                    <h3 className="home-promo-card__title">{promo.title}</h3>
+                    {promo.subtitle && <strong className="home-promo-card__subtitle">{promo.subtitle}</strong>}
+                    <p className="home-promo-card__desc">{promo.description}</p>
+                    {promo.ctaLink && (
+                      <Link to={promo.ctaLink} className="home-promo-card__cta">
+                        <span>{promo.ctaText || 'Learn More'}</span>
+                        <ArrowRight size={14} aria-hidden="true" />
+                      </Link>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

@@ -1,0 +1,220 @@
+.multi-enquiry-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  justify-content: flex-end;
+  pointer-events: auto;
+  touch-action: auto;
+  animation: multiOverlayFadeIn 0.2s ease-out;
+}
+
+@keyframes multiOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.multi-enquiry-drawer {
+  width: 100%;
+  max-width: 480px;
+  height: 100%;
+  background: var(--bg-card);
+  border-left: 1px solid var(--border-metal);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  overflow-y: auto;
+  pointer-events: auto;
+  box-shadow: -10px 0 35px rgba(0, 0, 0, 0.8);
+  animation: multiDrawerSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes multiDrawerSlideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.multi-enquiry-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.multi-enquiry-drawer__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.multi-enquiry-drawer__icon {
+  color: var(--red-bright);
+}
+
+.multi-enquiry-drawer__header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--silver-bright);
+}
+
+.multi-enquiry-drawer__close {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  color: var(--silver-muted);
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.multi-enquiry-drawer__close:hover {
+  border-color: var(--red-bright);
+  color: var(--red-bright);
+}
+
+.multi-enquiry-drawer__intro {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--silver-muted);
+  line-height: 1.45;
+}
+
+.multi-enquiry-empty {
+  padding: 3rem 1rem;
+  text-align: center;
+  display: grid;
+  gap: 0.5rem;
+  border: 1px dashed var(--border-metal);
+  border-radius: var(--radius-sm);
+  color: var(--silver-muted);
+  font-size: 0.9rem;
+}
+
+.multi-enquiry-items {
+  display: grid;
+  gap: 0.65rem;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.multi-enquiry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: var(--surface-panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.multi-enquiry-item__info strong {
+  display: block;
+  font-size: 0.92rem;
+  color: var(--silver-bright);
+}
+
+.multi-enquiry-item__info span {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--silver-muted);
+}
+
+.multi-enquiry-item__remove {
+  background: transparent;
+  border: none;
+  color: var(--silver-muted);
+  padding: 0.5rem;
+  min-height: 44px;
+  min-width: 44px;
+  display: grid;
+  place-items: center;
+}
+
+.multi-enquiry-item__remove:hover {
+  color: var(--red-bright);
+}
+
+.multi-enquiry-form {
+  display: grid;
+  gap: 0.85rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.multi-enquiry-field {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.multi-enquiry-field label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--silver-muted);
+}
+
+.multi-enquiry-field input {
+  padding: 0.75rem 0.95rem;
+  background: var(--bg-void);
+  border: 1px solid var(--border-metal);
+  border-radius: var(--radius-sm);
+  color: var(--silver-bright);
+  font-size: 0.92rem;
+  min-height: 44px;
+}
+
+.multi-enquiry-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.multi-enquiry-send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: #25d366;
+  color: #0b0c10;
+  font-family: var(--font-tech);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-height: 48px;
+  transition: all 0.2s ease;
+}
+
+.multi-enquiry-send-btn:hover {
+  background: #2fe673;
+  box-shadow: 0 0 24px rgba(37, 211, 102, 0.4);
+}
+
+.multi-enquiry-clear-btn {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--silver-muted);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.6rem;
+  border-radius: var(--radius-sm);
+  min-height: 44px;
+}
+
+.multi-enquiry-clear-btn:hover {
+  color: var(--silver-bright);
+  border-color: var(--silver-dim);
+}
